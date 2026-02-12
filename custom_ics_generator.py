@@ -132,11 +132,24 @@ class CustomICSGenerator(BaseICSGenerator):
         """Add flight event with custom color"""
         event = super().add_flight_event(flight)
 
-        # Update color
+        # Update color properties (use both add() and direct assignment for compatibility)
         color_rgb = COLOR_MAP.get(self.flight_color, COLOR_MAP['11'])
+
+        # Remove old color properties
+        if 'color' in event:
+            del event['color']
+        if 'COLOR' in event:
+            del event['COLOR']
+        if 'x-google-calendar-content-color' in event:
+            del event['x-google-calendar-content-color']
+        if 'x-google-calendar-event-color' in event:
+            del event['x-google-calendar-event-color']
+
+        # Add new color properties
+        event.add('color', self.flight_color)
         event['COLOR'] = self.flight_color
-        event['X-GOOGLE-CALENDAR-CONTENT-COLOR'] = color_rgb
-        event['X-GOOGLE-CALENDAR-EVENT-COLOR'] = self.flight_color
+        event.add('x-google-calendar-content-color', color_rgb)
+        event.add('x-google-calendar-event-color', self.flight_color)
 
         return event
 
@@ -144,11 +157,29 @@ class CustomICSGenerator(BaseICSGenerator):
         """Add commute event with custom color"""
         event = super().add_commute_event(title, start_time, end_time, timezone_str, description)
 
-        # Update color
+        # Update color properties (use both add() and direct assignment for compatibility)
         color_rgb = COLOR_MAP.get(self.flight_color, COLOR_MAP['11'])
+
+        # Remove old color properties
+        if 'color' in event:
+            del event['color']
+        if 'COLOR' in event:
+            del event['COLOR']
+        if 'x-google-calendar-content-color' in event:
+            del event['x-google-calendar-content-color']
+        if 'x-google-calendar-event-color' in event:
+            del event['x-google-calendar-event-color']
+
+        # Add new color properties
+        event.add('color', self.flight_color)
         event['COLOR'] = self.flight_color
-        event['X-GOOGLE-CALENDAR-CONTENT-COLOR'] = color_rgb
-        event['X-GOOGLE-CALENDAR-EVENT-COLOR'] = self.flight_color
+        event.add('x-google-calendar-content-color', color_rgb)
+        event.add('x-google-calendar-event-color', self.flight_color)
+
+        # Ensure it's marked as BUSY
+        if 'transp' in event:
+            del event['transp']
+        event.add('transp', 'OPAQUE')
 
         return event
 
@@ -156,10 +187,28 @@ class CustomICSGenerator(BaseICSGenerator):
         """Add hotel event with custom color"""
         event = super().add_hotel_event(hotel)
 
-        # Update color
+        # Update color properties (use both add() and direct assignment for compatibility)
         color_rgb = COLOR_MAP.get(self.hotel_color, COLOR_MAP['6'])
+
+        # Remove old color properties
+        if 'color' in event:
+            del event['color']
+        if 'COLOR' in event:
+            del event['COLOR']
+        if 'x-google-calendar-content-color' in event:
+            del event['x-google-calendar-content-color']
+        if 'x-google-calendar-event-color' in event:
+            del event['x-google-calendar-event-color']
+
+        # Add new color properties
+        event.add('color', self.hotel_color)
         event['COLOR'] = self.hotel_color
-        event['X-GOOGLE-CALENDAR-CONTENT-COLOR'] = color_rgb
-        event['X-GOOGLE-CALENDAR-EVENT-COLOR'] = self.hotel_color
+        event.add('x-google-calendar-content-color', color_rgb)
+        event.add('x-google-calendar-event-color', self.hotel_color)
+
+        # Ensure it's marked as FREE (TRANSPARENT)
+        if 'transp' in event:
+            del event['transp']
+        event.add('transp', 'TRANSPARENT')
 
         return event
