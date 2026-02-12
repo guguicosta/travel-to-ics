@@ -44,6 +44,69 @@ class CustomICSGenerator(BaseICSGenerator):
         self.hotel_color = str(hotel_color)
         self.airport_times = airport_times or {}
 
+    def _prepare_flights_with_commutes(self, flights):
+        """
+        Prepare flight data with commute information for Google Calendar API.
+
+        Args:
+            flights: List of FlightInfo objects
+
+        Returns:
+            List of dicts with flight and commute information
+        """
+        from travel_to_ics import AIRPORT_TIMEZONES
+
+        processed_flights = []
+
+        for i, flight in enumerate(flights):
+            flight_data = {'flight': flight}
+
+            # Check if we need commute before (first flight or connection break)
+            needs_commute_before = True
+            if i > 0:
+                prev_flight = flights[i - 1]
+                time_diff = (flight.departure_time - prev_flight.arrival_time).total_seconds() / 3600
+                if time_diff < 12 and flight.origin == prev_flight.destination:
+                    needs_commute_before = False
+
+            # Check if we need commute after (last flight or connection break)
+            needs_commute_after = True
+            if i < len(flights) - 1:
+                next_flight = flights[i + 1]
+                time_diff = (next_flight.departure_time - flight.arrival_time).total_seconds() / 3600
+                if time_diff < 12 and flight.destination == next_flight.origin:
+                    needs_commute_after = False
+
+            # Add commute before if needed
+            if needs_commute_before:
+                commute_duration = self.get_commute_duration(flight.origin, is_departure=True)
+                origin_tz = AIRPORT_TIMEZONES.get(flight.origin, 'UTC')
+
+                flight_data['commute_before'] = {
+                    'title': f'Commute to {flight.origin} Airport',
+                    'start': flight.departure_time - commute_duration,
+                    'end': flight.departure_time,
+                    'timezone': origin_tz,
+                    'description': f'Travel to airport for flight {flight.flight_number}'
+                }
+
+            # Add commute after if needed
+            if needs_commute_after:
+                commute_duration = self.get_commute_duration(flight.destination, is_departure=False)
+                dest_tz = AIRPORT_TIMEZONES.get(flight.destination, 'UTC')
+
+                flight_data['commute_after'] = {
+                    'title': f'Commute from {flight.destination} Airport',
+                    'start': flight.arrival_time,
+                    'end': flight.arrival_time + commute_duration,
+                    'timezone': dest_tz,
+                    'description': f'Travel from airport after flight {flight.flight_number}'
+                }
+
+            processed_flights.append(flight_data)
+
+        return processed_flights
+
     def get_commute_duration(self, airport_code, is_departure=True):
         """
         Get commute duration based on airport and direction.
