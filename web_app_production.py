@@ -4,7 +4,7 @@ Simple web frontend for Travel PDF to ICS Converter
 ICS download only with customizable colors and commute times
 """
 
-from flask import Flask, render_template, request, send_file, flash, redirect, url_for
+from flask import Flask, render_template, request, send_file, flash, redirect, url_for, session
 import os
 from werkzeug.utils import secure_filename
 from travel_to_ics import TravelPDFParser
@@ -12,6 +12,8 @@ from custom_ics_generator import CustomICSGenerator
 from pathlib import Path
 import tempfile
 import secrets
+import pickle
+import uuid
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
@@ -38,7 +40,7 @@ def index():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    """Handle file upload and conversion."""
+    """Handle file upload and show preview."""
     if 'file' not in request.files:
         flash('No file selected', 'error')
         return redirect(url_for('index'))
@@ -64,10 +66,73 @@ def upload_file():
         flights = parser.parse_flights()
         hotels = parser.parse_hotels()
 
-        if not flights and not hotels:
-            flash('No flights or hotels found in the PDF. Please check if the PDF format is compatible.', 'warning')
+        # Clean up PDF
+        os.remove(pdf_path)
+
+        # Generate unique session ID
+        session_id = str(uuid.uuid4())
+
+        # Store parsed data in session (serialize objects)
+        session[f'flights_{session_id}'] = pickle.dumps(flights)
+        session[f'hotels_{session_id}'] = pickle.dumps(hotels)
+        session[f'filename_{session_id}'] = filename
+
+        # Redirect to preview page
+        return redirect(url_for('preview', session_id=session_id))
+
+    except Exception as e:
+        flash(f'Error processing file: {str(e)}', 'error')
+        # Clean up files on error
+        if os.path.exists(pdf_path):
             os.remove(pdf_path)
+        return redirect(url_for('index'))
+
+
+@app.route('/preview/<session_id>')
+def preview(session_id):
+    """Show preview of parsed data."""
+    try:
+        # Retrieve data from session
+        flights_data = session.get(f'flights_{session_id}')
+        hotels_data = session.get(f'hotels_{session_id}')
+
+        if not flights_data and not hotels_data:
+            flash('Session expired. Please upload your PDF again.', 'warning')
             return redirect(url_for('index'))
+
+        flights = pickle.loads(flights_data) if flights_data else []
+        hotels = pickle.loads(hotels_data) if hotels_data else []
+
+        return render_template('preview.html',
+                             flights=flights,
+                             hotels=hotels,
+                             session_id=session_id)
+    except Exception as e:
+        flash(f'Error loading preview: {str(e)}', 'error')
+        return redirect(url_for('index'))
+
+
+@app.route('/generate', methods=['POST'])
+def generate_ics():
+    """Generate ICS file from session data and custom settings."""
+    session_id = request.form.get('session_id')
+
+    if not session_id:
+        flash('Invalid session', 'error')
+        return redirect(url_for('index'))
+
+    try:
+        # Retrieve data from session
+        flights_data = session.get(f'flights_{session_id}')
+        hotels_data = session.get(f'hotels_{session_id}')
+        filename = session.get(f'filename_{session_id}', 'travel.pdf')
+
+        if not flights_data and not hotels_data:
+            flash('Session expired. Please upload your PDF again.', 'warning')
+            return redirect(url_for('index'))
+
+        flights = pickle.loads(flights_data) if flights_data else []
+        hotels = pickle.loads(hotels_data) if hotels_data else []
 
         # Get custom settings from form
         flight_color = request.form.get('flight_color', '11')
@@ -101,8 +166,10 @@ def upload_file():
         ics_path = os.path.join(app.config['UPLOAD_FOLDER'], ics_filename)
         generator.save(ics_path)
 
-        # Clean up PDF
-        os.remove(pdf_path)
+        # Clean up session data
+        session.pop(f'flights_{session_id}', None)
+        session.pop(f'hotels_{session_id}', None)
+        session.pop(f'filename_{session_id}', None)
 
         # Show success message
         flash(f'Successfully converted! Found {len(flights)} flights and {len(hotels)} hotels.', 'success')
@@ -116,10 +183,7 @@ def upload_file():
         )
 
     except Exception as e:
-        flash(f'Error processing file: {str(e)}', 'error')
-        # Clean up files on error
-        if os.path.exists(pdf_path):
-            os.remove(pdf_path)
+        flash(f'Error generating ICS file: {str(e)}', 'error')
         return redirect(url_for('index'))
 
 
