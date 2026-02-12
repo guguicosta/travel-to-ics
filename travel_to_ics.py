@@ -342,8 +342,13 @@ class ICSGenerator:
         event.add('dtstart', dtstart)
         event.add('dtend', dtend)
 
-        # Color (flamingo = 11 in Google Calendar)
+        # Color - Using both standard and Google-specific properties
+        # Flamingo color in Google Calendar
         event.add('color', '11')
+        event['COLOR'] = '11'
+        # Google Calendar specific color (Flamingo RGB)
+        event.add('x-google-calendar-content-color', '#F6BF26')
+        event.add('x-google-calendar-event-color', '11')
 
         # Status
         event.add('status', 'CONFIRMED')
@@ -375,8 +380,13 @@ class ICSGenerator:
         event.add('dtstart', dtstart)
         event.add('dtend', dtend)
 
-        # Color (flamingo = 11)
+        # Color - Using both standard and Google-specific properties
+        # Flamingo color in Google Calendar
         event.add('color', '11')
+        event['COLOR'] = '11'
+        # Google Calendar specific color (Flamingo RGB)
+        event.add('x-google-calendar-content-color', '#F6BF26')
+        event.add('x-google-calendar-event-color', '11')
 
         # Status
         event.add('status', 'CONFIRMED')
@@ -416,8 +426,13 @@ class ICSGenerator:
         event.add('dtstart', checkin)
         event.add('dtend', checkout)
 
-        # Color (sage = 6 in Google Calendar)
+        # Color - Using both standard and Google-specific properties
+        # Sage color in Google Calendar
         event.add('color', '6')
+        event['COLOR'] = '6'
+        # Google Calendar specific color (Sage RGB)
+        event.add('x-google-calendar-content-color', '#0B8043')
+        event.add('x-google-calendar-event-color', '6')
 
         # Status
         event.add('status', 'CONFIRMED')
