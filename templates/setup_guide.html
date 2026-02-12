@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Calendar Setup - Travel to ICS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .status {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .status-configured {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .status-not-configured {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+        }
+
+        .step {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step h2 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .step p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .step ul {
+            color: #555;
+            line-height: 1.8;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        .icon {
+            margin-right: 8px;
+        }
+
+        .checkbox {
+            margin-right: 10px;
+        }
+
+        .completion-tracker {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Google Calendar API Setup</h1>
+            <p>Enable direct calendar push in 5 easy steps</p>
+        </div>
+
+        <div class="status {% if google_configured %}status-configured{% else %}status-not-configured{% endif %}">
+            <div class="status-icon">
+                {% if google_configured %}
+                    ✅
+                {% else %}
+                    ⚠️
+                {% endif %}
+            </div>
+            <h3>
+                {% if google_configured %}
+                    Google Calendar Integration: CONFIGURED
+                {% else %}
+                    Google Calendar Integration: NOT CONFIGURED
+                {% endif %}
+            </h3>
+            <p>
+                {% if google_configured %}
+                    Users can push events directly to Google Calendar!
+                {% else %}
+                    Users can only download ICS files (works great, but manual import required)
+                {% endif %}
+            </p>
+        </div>
+
+        {% if not google_configured %}
+        <div class="alert alert-info">
+            <strong>💡 Good News!</strong> The ICS download feature works perfectly without any setup.
+            This guide is only needed if you want the <strong>direct Google Calendar push</strong> feature.
+        </div>
+
+        <div class="completion-tracker">
+            <h3>Setup Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+            <p id="progressText">0 of 5 steps completed</p>
+        </div>
+
+        <!-- Step 1: Create Project -->
+        <div class="step">
+            <h2>
+                <span class="step-number">1</span>
+                Create Google Cloud Project
+            </h2>
+            <p>First, you need to create a project in Google Cloud Console where the API will be configured.</p>
+            <p><strong>What you'll do:</strong></p>
+            <ul>
+                <li>Click "New Project"</li>
+                <li>Name it: "Travel ICS Converter"</li>
+                <li>Click "Create"</li>
+            </ul>
+            <a href="https://console.cloud.google.com/projectcreate" target="_blank" class="btn">
+                <span class="icon">🚀</span> Open Google Cloud Console
+            </a>
+            <a href="https://console.cloud.google.com/" target="_blank" class="btn btn-secondary">
+                <span class="icon">🏠</span> Go to Dashboard
+            </a>
+            <br><br>
+            <label>
+                <input type="checkbox" class="checkbox step-checkbox" data-step="1">
+                I've created the project
+            </label>
+        </div>
+
+        <!-- Step 2: Enable API -->
+        <div class="step">
+            <h2>
+                <span class="step-number">2</span>
+                Enable Google Calendar API
+            </h2>
+            <p>Enable the Google Calendar API for your project so the app can create events.</p>
+            <p><strong>What you'll do:</strong></p>
+            <ul>
+                <li>Search for "Google Calendar API"</li>
+                <li>Click on it</li>
+                <li>Click "Enable"</li>
+            </ul>
+            <a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" class="btn">
+                <span class="icon">⚡</span> Enable Calendar API
+            </a>
+            <a href="https://console.cloud.google.com/apis/library" target="_blank" class="btn btn-secondary">
+                <span class="icon">📚</span> Browse API Library
+            </a>
+            <br><br>
+            <label>
+                <input type="checkbox" class="checkbox step-checkbox" data-step="2">
+                I've enabled the API
+            </label>
+        </div>
+
+        <!-- Step 3: OAuth Consent -->
+        <div class="step">
+            <h2>
+                <span class="step-number">3</span>
+                Configure OAuth Consent Screen
+            </h2>
+            <p>Set up the authorization screen that users will see when connecting their Google Calendar.</p>
+            <p><strong>What you'll do:</strong></p>
+            <ul>
+                <li>Select "External" user type</li>
+                <li>Enter app name: "Travel to ICS Converter"</li>
+                <li>Add your email as support email</li>
+                <li>Add yourself as a test user</li>
+            </ul>
+            <a href="https://console.cloud.google.com/apis/credentials/consent" target="_blank" class="btn">
+                <span class="icon">🔐</span> Configure OAuth Screen
+            </a>
+            <br><br>
+            <label>
+                <input type="checkbox" class="checkbox step-checkbox" data-step="3">
+                I've configured OAuth consent
+            </label>
+        </div>
+
+        <!-- Step 4: Create Credentials -->
+        <div class="step">
+            <h2>
+                <span class="step-number">4</span>
+                Create OAuth Credentials
+            </h2>
+            <p>Generate the credentials file that the app needs to authenticate with Google.</p>
+            <p><strong>What you'll do:</strong></p>
+            <ul>
+                <li>Click "Create Credentials" → "OAuth client ID"</li>
+                <li>Application type: "Web application"</li>
+                <li>Name: "Travel ICS Web App"</li>
+                <li>Add redirect URIs:
+                    <div class="code-block">http://localhost:8080/google-callback<br>{{ callback_url }}</div>
+                </li>
+                <li><strong>Download the JSON file</strong></li>
+            </ul>
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="btn">
+                <span class="icon">🔑</span> Create Credentials
+            </a>
+            <br><br>
+            <label>
+                <input type="checkbox" class="checkbox step-checkbox" data-step="4">
+                I've downloaded credentials.json
+            </label>
+        </div>
+
+        <!-- Step 5: Install Credentials -->
+        <div class="step">
+            <h2>
+                <span class="step-number">5</span>
+                Install Credentials
+            </h2>
+            <p>Upload the credentials file to make it available to the app.</p>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Important:</strong> Choose the method that matches your deployment.
+            </div>
+
+            <h3>📍 Local Development:</h3>
+            <p>Move the downloaded file to your project directory:</p>
+            <div class="code-block">mv ~/Downloads/client_secret_*.json credentials.json</div>
+
+            <h3>☁️ Production (Render.com):</h3>
+            <p><strong>Option A:</strong> Upload via Shell (Simpler)</p>
+            <ol style="margin-left: 20px; margin-bottom: 15px;">
+                <li>Go to your <a href="https://dashboard.render.com/" target="_blank" style="color: #667eea;">Render Dashboard</a></li>
+                <li>Click your app → "Shell" (left menu)</li>
+                <li>Run: <code>cat > credentials.json</code></li>
+                <li>Paste the entire contents of your credentials.json file</li>
+                <li>Press Ctrl+D to save</li>
+            </ol>
+
+            <p><strong>Option B:</strong> Environment Variable (More Secure)</p>
+            <ol style="margin-left: 20px;">
+                <li>Convert to base64: <code>cat credentials.json | base64</code></li>
+                <li>Go to Render → Environment</li>
+                <li>Add variable: <code>GOOGLE_CREDENTIALS_JSON</code></li>
+                <li>Paste the base64 string as value</li>
+            </ol>
+
+            <br>
+            <label>
+                <input type="checkbox" class="checkbox step-checkbox" data-step="5">
+                I've installed credentials
+            </label>
+        </div>
+
+        <!-- Verification -->
+        <div class="step" style="border-left-color: #28a745;">
+            <h2>
+                <span class="step-number" style="background: #28a745;">✓</span>
+                Verify Setup
+            </h2>
+            <p>Test that everything is working correctly:</p>
+
+            <h3>Local Test:</h3>
+            <div class="code-block">python3 check_setup.py</div>
+
+            <h3>Production Test:</h3>
+            <p>Check the health endpoint:</p>
+            <div class="code-block">curl {{ base_url }}/health</div>
+
+            <p style="margin-top: 15px;">You should see:</p>
+            <div class="code-block">"google_calendar": true</div>
+
+            <a href="/" class="btn btn-success">
+                <span class="icon">🎉</span> Go to App & Test
+            </a>
+        </div>
+
+        {% else %}
+        <!-- Already Configured -->
+        <div class="alert alert-info">
+            <strong>✅ All Set!</strong> Google Calendar integration is working. Users can now push events directly to their calendars.
+        </div>
+
+        <div class="step">
+            <h2>Management Links</h2>
+            <p>Use these links to manage your Google Cloud project:</p>
+            <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="btn">
+                <span class="icon">🔑</span> View Credentials
+            </a>
+            <a href="https://console.cloud.google.com/apis/credentials/consent" target="_blank" class="btn btn-secondary">
+                <span class="icon">👥</span> Manage Test Users
+            </a>
+            <a href="https://console.cloud.google.com/apis/dashboard" target="_blank" class="btn btn-secondary">
+                <span class="icon">📊</span> API Dashboard
+            </a>
+        </div>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="/">← Back to App</a>
+        </div>
+    </div>
+
+    <script>
+        // Progress tracking
+        const checkboxes = document.querySelectorAll('.step-checkbox');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const totalSteps = 5;
+
+        function updateProgress() {
+            const completed = document.querySelectorAll('.step-checkbox:checked').length;
+            const percentage = (completed / totalSteps) * 100;
+
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = `${completed} of ${totalSteps} steps completed`;
+
+            // Save to localStorage
+            const completedSteps = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.dataset.step);
+            localStorage.setItem('setupProgress', JSON.stringify(completedSteps));
+        }
+
+        // Load saved progress
+        const savedProgress = JSON.parse(localStorage.getItem('setupProgress') || '[]');
+        checkboxes.forEach(cb => {
+            if (savedProgress.includes(cb.dataset.step)) {
+                cb.checked = true;
+            }
+            cb.addEventListener('change', updateProgress);
+        });
+
+        // Initial update
+        updateProgress();
+    </script>
+</body>
+</html>

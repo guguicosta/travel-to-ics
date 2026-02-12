@@ -169,6 +169,21 @@ def about():
     return render_template('about.html')
 
 
+@app.route('/setup')
+def setup():
+    """Google Calendar API setup guide."""
+    google_configured = os.path.exists('credentials.json')
+    callback_url = url_for('google_callback', _external=True)
+    base_url = request.url_root.rstrip('/')
+
+    return render_template(
+        'setup_guide.html',
+        google_configured=google_configured,
+        callback_url=callback_url,
+        base_url=base_url
+    )
+
+
 @app.route('/google-auth')
 def google_auth():
     """Initiate Google OAuth flow."""
