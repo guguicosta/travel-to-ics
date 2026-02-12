@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}About - Travel to ICS Converter{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="color: #333; margin-bottom: 20px;">📖 About This App</h2>
+
+    <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+        This app converts CWT (Carlson Wagonlit Travel) travel itinerary PDFs into Google Calendar
+        ICS files, making it easy to import your entire trip into your calendar with just one click.
+    </p>
+
+    <h3 style="color: #333; margin-top: 30px; margin-bottom: 15px;">✨ Features</h3>
+    <ul style="color: #666; line-height: 2; margin-left: 20px;">
+        <li><strong>Flight Appointments:</strong> Includes flight number, airports, times with proper timezones</li>
+        <li><strong>48-Hour Alarms:</strong> Get notified 2 days before each flight</li>
+        <li><strong>Commute Times:</strong> Automatic buffer time before and after flights</li>
+        <li><strong>Hotel Reservations:</strong> Check-in and check-out times with all details</li>
+        <li><strong>Timezone Support:</strong> Handles multiple timezones across your trip</li>
+        <li><strong>Color Coding:</strong> Flamingo for flights, Sage for hotels</li>
+    </ul>
+
+    <h3 style="color: #333; margin-top: 30px; margin-bottom: 15px;">📅 What Gets Created</h3>
+    <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+        <p style="color: #333; font-weight: 600; margin-bottom: 10px;">For Each Flight:</p>
+        <ul style="color: #666; line-height: 1.8; margin-left: 20px;">
+            <li>🚗 <strong>Commute & Airport</strong> - Buffer time to get to airport (2.5-3.5 hours)</li>
+            <li>✈️ <strong>Flight</strong> - Flight details with reservation code and ticket number</li>
+            <li>🚗 <strong>Airport & Commute</strong> - Buffer time to leave airport (1-1.5 hours)</li>
+        </ul>
+
+        <p style="color: #333; font-weight: 600; margin-top: 20px; margin-bottom: 10px;">For Each Hotel:</p>
+        <ul style="color: #666; line-height: 1.8; margin-left: 20px;">
+            <li>🏨 <strong>Hotel Stay</strong> - Check-in (3:00 PM) to check-out (12:00 PM)</li>
+            <li>📍 Includes confirmation number, address, phone, and room details</li>
+            <li>⏰ Marked as "free" time (won't show as busy)</li>
+        </ul>
+    </div>
+
+    <h3 style="color: #333; margin-top: 30px; margin-bottom: 15px;">🌍 Supported Airports</h3>
+    <p style="color: #666; line-height: 1.6; margin-bottom: 10px;">
+        Includes timezone mappings for 50+ major airports worldwide, including:
+    </p>
+    <ul style="color: #666; line-height: 1.8; margin-left: 20px; margin-bottom: 20px;">
+        <li><strong>South America:</strong> SCL, LIM, BOG, GRU, GIG, EZE, AEP</li>
+        <li><strong>North America:</strong> MIA, JFK, LAX, SFO, ORD, DFW, ATL</li>
+        <li><strong>Europe:</strong> LHR, CDG, MAD, FCO, AMS, FRA</li>
+        <li><strong>Asia & Pacific:</strong> SYD, MEL, SIN, HKG, NRT, DXB</li>
+    </ul>
+
+    <h3 style="color: #333; margin-top: 30px; margin-bottom: 15px;">📱 How to Import to Google Calendar</h3>
+    <ol style="color: #666; line-height: 2; margin-left: 20px;">
+        <li>Upload your CWT PDF file using this app</li>
+        <li>Download the generated .ics file</li>
+        <li>Open <a href="https://calendar.google.com" target="_blank" style="color: #667eea;">Google Calendar</a></li>
+        <li>Click Settings (⚙️) → Import & Export</li>
+        <li>Choose the .ics file and import</li>
+    </ol>
+
+    <h3 style="color: #333; margin-top: 30px; margin-bottom: 15px;">⚠️ Important Notes</h3>
+    <ul style="color: #666; line-height: 1.8; margin-left: 20px;">
+        <li>This app is designed specifically for <strong>CWT itinerary PDFs</strong></li>
+        <li>PDFs must be in Spanish format (as provided by CWT)</li>
+        <li>Maximum file size: 16MB</li>
+        <li>Your files are processed locally and immediately deleted after conversion</li>
+    </ul>
+
+    <div style="text-align: center; margin-top: 40px;">
+        <a href="{{ url_for('index') }}" class="btn">⬅️ Back to Upload</a>
+    </div>
+</div>
+{% endblock %}

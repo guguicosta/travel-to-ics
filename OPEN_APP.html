@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=http://localhost:5000">
+    <title>Opening Travel to ICS Converter...</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
+        h1 { margin-top: 0; }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            text-align: left;
+        }
+        .info h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        code {
+            background: #e8e9ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✈️ Opening Travel to ICS Converter</h1>
+        <div class="spinner"></div>
+        <p>Redirecting to <a href="http://localhost:5000">http://localhost:5000</a></p>
+
+        <div class="info">
+            <h3>⚠️ If the page doesn't load:</h3>
+            <ol style="text-align: left; line-height: 1.8;">
+                <li>Make sure the server is running:
+                    <br><code>cd "/Users/agcosta/Proyecto Claude EA viajes" && ./start_web_app.sh</code>
+                </li>
+                <li>Try these URLs manually:
+                    <ul>
+                        <li><a href="http://localhost:5000">http://localhost:5000</a></li>
+                        <li><a href="http://127.0.0.1:5000">http://127.0.0.1:5000</a></li>
+                        <li><a href="http://localhost:8080">http://localhost:8080</a> (alternative)</li>
+                    </ul>
+                </li>
+                <li><strong>On macOS:</strong> Turn off AirPlay Receiver
+                    <br>System Settings → General → AirDrop & Handoff → AirPlay Receiver (OFF)
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Try multiple ports
+        const ports = [5000, 8080, 8888];
+        let currentPort = 0;
+
+        function tryNextPort() {
+            if (currentPort < ports.length) {
+                const port = ports[currentPort];
+                fetch(`http://localhost:${port}`)
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = `http://localhost:${port}`;
+                        } else {
+                            currentPort++;
+                            tryNextPort();
+                        }
+                    })
+                    .catch(() => {
+                        currentPort++;
+                        tryNextPort();
+                    });
+            }
+        }
+
+        // Wait a bit before trying
+        setTimeout(tryNextPort, 1000);
+    </script>
+</body>
+</html>
