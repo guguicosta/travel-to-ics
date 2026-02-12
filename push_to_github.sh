@@ -1,0 +1,72 @@
+#!/bin/bash
+
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║         📤 Pushing to GitHub: guguicosta/travel-to-ics      ║"
+echo "╚══════════════════════════════════════════════════════════════╝"
+echo ""
+
+cd "$(dirname "$0")"
+
+echo "🔍 Checking git status..."
+git status
+
+echo ""
+echo "📦 Current branch: $(git branch --show-current)"
+echo "📦 Remote URL: $(git remote get-url origin)"
+echo ""
+
+echo "🚀 Pushing to GitHub..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+
+git push -u origin main
+
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "✅ SUCCESS! Code pushed to GitHub!"
+    echo ""
+    echo "📍 Repository: https://github.com/guguicosta/travel-to-ics"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "🎯 NEXT STEPS:"
+    echo ""
+    echo "1. Go to: https://render.com"
+    echo "2. Sign up with GitHub"
+    echo "3. Click 'New +' → 'Web Service'"
+    echo "4. Select 'guguicosta/travel-to-ics'"
+    echo "5. Configure:"
+    echo "   - Name: travel-to-ics-converter"
+    echo "   - Build Command: pip install -r requirements-production.txt"
+    echo "   - Start Command: gunicorn -w 4 -b 0.0.0.0:\$PORT web_app_production:app"
+    echo "6. Add Environment Variable:"
+    echo "   - SECRET_KEY: (generate below)"
+    echo ""
+    echo "🔑 Generate SECRET_KEY with:"
+    echo "   python3 -c 'import secrets; print(secrets.token_hex(32))'"
+    echo ""
+    echo "7. Click 'Create Web Service'"
+    echo "8. Wait 2-3 minutes for deployment"
+    echo "9. Get your public URL!"
+    echo ""
+    echo "═══════════════════════════════════════════════════════════════"
+else
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "❌ Push failed!"
+    echo ""
+    echo "If you see authentication error, you need to:"
+    echo ""
+    echo "Option 1 - Use GitHub CLI (Easiest):"
+    echo "  brew install gh"
+    echo "  gh auth login"
+    echo "  Then run this script again"
+    echo ""
+    echo "Option 2 - Use Personal Access Token:"
+    echo "  1. Go to: https://github.com/settings/tokens"
+    echo "  2. Generate new token with 'repo' scope"
+    echo "  3. When prompted for password, use the token"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+fi

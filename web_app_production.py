@@ -6,7 +6,8 @@ Production-ready web frontend for Travel PDF to ICS Converter
 from flask import Flask, render_template, request, send_file, flash, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
-from travel_to_ics import TravelPDFParser, ICSGenerator
+from travel_to_ics import TravelPDFParser
+from custom_ics_generator import CustomICSGenerator
 from pathlib import Path
 import tempfile
 import secrets
@@ -68,8 +69,28 @@ def upload_file():
             os.remove(pdf_path)
             return redirect(url_for('index'))
 
-        # Generate ICS
-        generator = ICSGenerator()
+        # Get custom settings from form
+        flight_color = request.form.get('flight_color', '11')
+        hotel_color = request.form.get('hotel_color', '6')
+
+        # Get airport commute times
+        airport_times = {}
+        for key in ['scl_before', 'scl_after', 'aep_before', 'aep_after',
+                   'eze_before', 'eze_after', 'gru_before', 'gru_after',
+                   'mex_before', 'mex_after', 'international_before', 'international_after']:
+            if key in request.form:
+                # Convert to uppercase for airport code
+                parts = key.split('_')
+                airport_code = parts[0].upper()
+                direction = parts[1]
+                airport_times[f'{airport_code}_{direction}'] = request.form[key]
+
+        # Generate ICS with custom settings
+        generator = CustomICSGenerator(
+            flight_color=flight_color,
+            hotel_color=hotel_color,
+            airport_times=airport_times
+        )
         generator.process_flights(flights)
 
         for hotel in hotels:

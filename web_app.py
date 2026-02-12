@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """
-Web frontend for Travel PDF to ICS Converter
+Production-ready web frontend for Travel PDF to ICS Converter
 """
 
 from flask import Flask, render_template, request, send_file, flash, redirect, url_for
 import os
 from werkzeug.utils import secure_filename
-from travel_to_ics import TravelPDFParser, ICSGenerator
+from travel_to_ics import TravelPDFParser
+from custom_ics_generator import CustomICSGenerator
 from pathlib import Path
 import tempfile
+import secrets
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this-in-production'
+# Production secret key - change this!
+app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 
 # Configuration
 UPLOAD_FOLDER = tempfile.gettempdir()
@@ -66,8 +69,28 @@ def upload_file():
             os.remove(pdf_path)
             return redirect(url_for('index'))
 
-        # Generate ICS
-        generator = ICSGenerator()
+        # Get custom settings from form
+        flight_color = request.form.get('flight_color', '11')
+        hotel_color = request.form.get('hotel_color', '6')
+
+        # Get airport commute times
+        airport_times = {}
+        for key in ['scl_before', 'scl_after', 'aep_before', 'aep_after',
+                   'eze_before', 'eze_after', 'gru_before', 'gru_after',
+                   'mex_before', 'mex_after', 'international_before', 'international_after']:
+            if key in request.form:
+                # Convert to uppercase for airport code
+                parts = key.split('_')
+                airport_code = parts[0].upper()
+                direction = parts[1]
+                airport_times[f'{airport_code}_{direction}'] = request.form[key]
+
+        # Generate ICS with custom settings
+        generator = CustomICSGenerator(
+            flight_color=flight_color,
+            hotel_color=hotel_color,
+            airport_times=airport_times
+        )
         generator.process_flights(flights)
 
         for hotel in hotels:
@@ -106,45 +129,25 @@ def about():
     return render_template('about.html')
 
 
+@app.route('/health')
+def health():
+    """Health check endpoint for deployment monitoring."""
+    return {'status': 'healthy', 'service': 'travel-to-ics'}, 200
+
+
 if __name__ == '__main__':
-    # Create templates folder if it doesn't exist
-    os.makedirs('templates', exist_ok=True)
-    os.makedirs('static', exist_ok=True)
+    # Production configuration
+    port = int(os.environ.get('PORT', 8080))
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-    # Try port 5000 first, fallback to 8080 if unavailable
-    import socket
-
-    def is_port_available(port):
-        """Check if a port is available"""
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            sock.bind(('0.0.0.0', port))
-            sock.close()
-            return True
-        except OSError:
-            return False
-
-    # Determine which port to use
-    if is_port_available(5000):
-        port = 5000
-    elif is_port_available(8080):
-        port = 8080
-        print("\n⚠️  Port 5000 is in use (possibly AirPlay Receiver)")
-        print("   Using port 8080 instead")
-    else:
-        port = 8888
-        print("\n⚠️  Ports 5000 and 8080 are in use")
-        print("   Using port 8888 instead")
-
-    print("\n" + "="*60)
-    print("  ✈️  Travel to ICS Converter Web App")
     print("="*60)
-    print(f"\n🌐 Open your browser to:")
-    print(f"   http://localhost:{port}")
-    print(f"   http://127.0.0.1:{port}")
-    print(f"\n📱 Or from another device on your network:")
-    print(f"   http://192.168.86.30:{port}")
-    print(f"\n⌨️  Press CTRL+C to stop the server")
+    print("  ✈️  Travel to ICS Converter - Production Mode")
+    print("="*60)
+    print(f"\n🌐 Running on port: {port}")
+    print(f"🔒 Debug mode: {debug}")
+    print(f"🔑 Secret key: {'Set' if app.secret_key else 'Not set (using default)'}")
+    print("\n⚠️  For production, use a WSGI server like Gunicorn:")
+    print(f"   gunicorn -w 4 -b 0.0.0.0:{port} web_app_production:app")
     print("="*60 + "\n")
 
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=debug, host='0.0.0.0', port=port)

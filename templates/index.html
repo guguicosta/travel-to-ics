@@ -13,6 +13,213 @@
 
         <div id="fileName" class="file-name" style="display: none;"></div>
 
+        <!-- Customization Options -->
+        <div id="customOptions" style="display: none; margin-top: 30px; padding: 20px; background: #f8f9ff; border-radius: 10px;">
+            <h3 style="color: #333; margin-bottom: 20px; text-align: center;">⚙️ Customize Settings</h3>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px;">
+                <!-- Color Settings -->
+                <div>
+                    <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px;">
+                        ✈️ Flight & Commute Color
+                    </label>
+                    <select name="flight_color" id="flightColor" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em;">
+                        <option value="11" selected>🌸 Flamingo (Default)</option>
+                        <option value="1">💜 Lavender</option>
+                        <option value="2">💚 Sage</option>
+                        <option value="3">🍇 Grape</option>
+                        <option value="4">🌸 Blossom</option>
+                        <option value="5">🍌 Banana</option>
+                        <option value="6">🌿 Basil</option>
+                        <option value="7">🔵 Peacock</option>
+                        <option value="8">🌫️ Graphite</option>
+                        <option value="9">💙 Blueberry</option>
+                        <option value="10">🍊 Tangerine</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px;">
+                        🏨 Hotel Color
+                    </label>
+                    <select name="hotel_color" id="hotelColor" style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 8px; font-size: 1em;">
+                        <option value="6" selected>🌿 Sage (Default)</option>
+                        <option value="1">💜 Lavender</option>
+                        <option value="2">💚 Basil Light</option>
+                        <option value="3">🍇 Grape</option>
+                        <option value="4">🌸 Blossom</option>
+                        <option value="5">🍌 Banana</option>
+                        <option value="7">🔵 Peacock</option>
+                        <option value="8">🌫️ Graphite</option>
+                        <option value="9">💙 Blueberry</option>
+                        <option value="10">🍊 Tangerine</option>
+                        <option value="11">🌸 Flamingo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Airport Commute Times -->
+            <div style="margin-bottom: 25px;">
+                <h4 style="color: #333; margin-bottom: 15px;">🚗 Commute Before Departure</h4>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇨🇱 SCL
+                        </label>
+                        <select name="scl_before" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="2.5" selected>2.5 hours</option>
+                            <option value="2.0">2 hours</option>
+                            <option value="3.0">3 hours</option>
+                            <option value="3.5">3.5 hours</option>
+                            <option value="4.0">4 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇦🇷 AEP
+                        </label>
+                        <select name="aep_before" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="3.5" selected>3.5 hours</option>
+                            <option value="2.5">2.5 hours</option>
+                            <option value="3.0">3 hours</option>
+                            <option value="4.0">4 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇦🇷 EZE
+                        </label>
+                        <select name="eze_before" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="3.5" selected>3.5 hours</option>
+                            <option value="3.0">3 hours</option>
+                            <option value="4.0">4 hours</option>
+                            <option value="4.5">4.5 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇧🇷 GRU
+                        </label>
+                        <select name="gru_before" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="3.5" selected>3.5 hours</option>
+                            <option value="3.0">3 hours</option>
+                            <option value="4.0">4 hours</option>
+                            <option value="4.5">4.5 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇲🇽 MEX
+                        </label>
+                        <select name="mex_before" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="3.5" selected>3.5 hours</option>
+                            <option value="3.0">3 hours</option>
+                            <option value="4.0">4 hours</option>
+                            <option value="4.5">4.5 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🌍 Other Intl
+                        </label>
+                        <select name="international_before" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="3.5" selected>3.5 hours</option>
+                            <option value="3.0">3 hours</option>
+                            <option value="4.0">4 hours</option>
+                            <option value="4.5">4.5 hours</option>
+                            <option value="5.0">5 hours</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- After Landing Times -->
+            <div style="margin-bottom: 20px;">
+                <h4 style="color: #333; margin-bottom: 15px;">🚗 Commute After Landing</h4>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇨🇱 SCL
+                        </label>
+                        <select name="scl_after" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="1.0" selected>1 hour</option>
+                            <option value="0.5">30 min</option>
+                            <option value="1.5">1.5 hours</option>
+                            <option value="2.0">2 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇦🇷 AEP
+                        </label>
+                        <select name="aep_after" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="1.0" selected>1 hour</option>
+                            <option value="0.5">30 min</option>
+                            <option value="1.5">1.5 hours</option>
+                            <option value="2.0">2 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇦🇷 EZE
+                        </label>
+                        <select name="eze_after" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="1.5" selected>1.5 hours</option>
+                            <option value="1.0">1 hour</option>
+                            <option value="2.0">2 hours</option>
+                            <option value="2.5">2.5 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇧🇷 GRU
+                        </label>
+                        <select name="gru_after" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="1.5" selected>1.5 hours</option>
+                            <option value="1.0">1 hour</option>
+                            <option value="2.0">2 hours</option>
+                            <option value="2.5">2.5 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🇲🇽 MEX
+                        </label>
+                        <select name="mex_after" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="1.5" selected>1.5 hours</option>
+                            <option value="1.0">1 hour</option>
+                            <option value="2.0">2 hours</option>
+                            <option value="2.5">2.5 hours</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9em;">
+                            🌍 Other Intl
+                        </label>
+                        <select name="international_after" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option value="1.5" selected>1.5 hours</option>
+                            <option value="1.0">1 hour</option>
+                            <option value="2.0">2 hours</option>
+                            <option value="2.5">2.5 hours</option>
+                            <option value="3.0">3 hours</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div style="text-align: center; margin-top: 30px;">
             <button type="submit" class="btn" id="submitBtn" disabled>
                 🚀 Convert to Calendar
@@ -37,7 +244,7 @@
         <div class="feature">
             <div class="feature-icon">🚗</div>
             <div class="feature-title">Commute Times</div>
-            <div class="feature-desc">Airport travel before & after flights</div>
+            <div class="feature-desc">Customizable airport travel times</div>
         </div>
         <div class="feature">
             <div class="feature-icon">🏨</div>
@@ -45,9 +252,9 @@
             <div class="feature-desc">Check-in & check-out times</div>
         </div>
         <div class="feature">
-            <div class="feature-icon">🌍</div>
-            <div class="feature-title">Timezones</div>
-            <div class="feature-desc">Automatic timezone detection</div>
+            <div class="feature-icon">🎨</div>
+            <div class="feature-title">Custom Colors</div>
+            <div class="feature-desc">Choose your calendar colors</div>
         </div>
     </div>
 </div>
@@ -59,6 +266,7 @@
     const submitBtn = document.getElementById('submitBtn');
     const uploadForm = document.getElementById('uploadForm');
     const loading = document.getElementById('loading');
+    const customOptions = document.getElementById('customOptions');
 
     // Prevent default drag behaviors
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -107,6 +315,9 @@
             fileName.textContent = `📄 ${file.name} (${formatFileSize(file.size)})`;
             fileName.style.display = 'block';
             submitBtn.disabled = false;
+
+            // Show customization options
+            customOptions.style.display = 'block';
 
             // Update upload area
             uploadArea.querySelector('.upload-text').textContent = 'File selected!';
