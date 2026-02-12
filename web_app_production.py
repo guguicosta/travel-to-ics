@@ -181,6 +181,9 @@ def google_auth():
         session['oauth_state'] = state
 
         return redirect(authorization_url)
+    except FileNotFoundError as e:
+        flash('⚠️ Google Calendar integration is not configured yet. Please use the "Download ICS File" option instead, or contact your administrator to set up Google Calendar API credentials.', 'error')
+        return redirect(url_for('index'))
     except Exception as e:
         flash(f'Error initiating Google authentication: {str(e)}', 'error')
         return redirect(url_for('index'))
@@ -310,7 +313,15 @@ def google_callback():
 @app.route('/health')
 def health():
     """Health check endpoint for deployment monitoring."""
-    return {'status': 'healthy', 'service': 'travel-to-ics'}, 200
+    google_calendar_configured = os.path.exists('credentials.json')
+    return {
+        'status': 'healthy',
+        'service': 'travel-to-ics',
+        'features': {
+            'ics_download': True,
+            'google_calendar': google_calendar_configured
+        }
+    }, 200
 
 
 if __name__ == '__main__':

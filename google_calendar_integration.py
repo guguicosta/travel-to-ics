@@ -31,6 +31,13 @@ class GoogleCalendarIntegration:
         self.creds = None
         self.service = None
 
+        # Check if credentials file exists
+        if not os.path.exists(self.credentials_file):
+            raise FileNotFoundError(
+                f"Google Calendar credentials not configured.\n"
+                f"Please follow GOOGLE_CALENDAR_SETUP.md to create {self.credentials_file}"
+            )
+
     def get_authorization_url(self, redirect_uri):
         """
         Get the authorization URL for OAuth2 flow

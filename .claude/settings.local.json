@@ -15,7 +15,8 @@
       "Bash(gh auth status:*)",
       "Bash(gh repo create:*)",
       "Bash(git push:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(python:*)"
     ]
   }
 }
